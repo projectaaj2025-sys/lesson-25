@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Панель учителя — Урок 25</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg: #f0f7ff;
+  --surface: #ffffff;
+  --surface-hover: #f8fbff;
+  --primary: #2563eb;
+  --primary-light: #3b82f6;
+  --primary-glow: #dbeafe;
+  --accent: #0ea5e9;
+  --accent-light: #e0f2fe;
+  --success: #10b981;
+  --success-light: #d1fae5;
+  --danger: #ef4444;
+  --danger-light: #fee2e2;
+  --warning: #f59e0b;
+  --warning-light: #fef3c7;
+  --text: #1e293b;
+  --text-dim: #64748b;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+  --shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 12px rgba(37,99,235,0.08);
+  --shadow-lg: 0 4px 6px rgba(0,0,0,0.04), 0 12px 32px rgba(37,99,235,0.12);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+
+/* ===== HEADER ===== */
+header { text-align: center; padding: 32px 0 24px; }
+header h1 { font-size: 2rem; font-weight: 800; color: var(--primary); margin-bottom: 6px; }
+header p { color: var(--text-dim); }
+
+/* ===== CARD ===== */
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+  padding: 28px; margin-bottom: 20px; box-shadow: var(--shadow);
+}
+.card h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 16px; }
+.card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; color: var(--primary); }
+
+/* ===== INPUTS ===== */
+input {
+  width: 100%; padding: 12px 16px; margin-bottom: 12px;
+  background: var(--surface); border: 2px solid var(--border); border-radius: 14px;
+  color: var(--text); font-size: 15px; font-family: inherit; transition: all .2s;
+}
+input:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 4px var(--primary-glow); }
+input::placeholder { color: var(--text-muted); }
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 12px 22px; border: none; border-radius: 12px; font-size: 14px;
+  font-weight: 600; font-family: inherit; cursor: pointer; transition: all .2s ease;
+  text-decoration: none; -webkit-appearance: none; appearance: none;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff;
+  box-shadow: 0 4px 14px rgba(37,99,235,0.25);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(37,99,235,0.35); }
+.btn-secondary {
+  background: var(--surface); color: var(--text-dim); border: 2px solid var(--border);
+}
+.btn-secondary:hover { background: var(--surface-hover); border-color: var(--primary-light); color: var(--primary); }
+.btn-danger {
+  background: linear-gradient(135deg, #dc2626, var(--danger)); color: #fff;
+  box-shadow: 0 4px 14px rgba(239,68,68,0.25);
+}
+.btn-danger:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(239,68,68,0.35); }
+.btn-back {
+  position: fixed; top: 20px; left: 20px; z-index: 100;
+  background: var(--surface); border: 2px solid var(--border); color: var(--text-dim);
+  padding: 10px 18px; border-radius: 50px; font-size: 13px; font-weight: 500;
+  font-family: inherit; cursor: pointer; transition: all .2s; box-shadow: var(--shadow);
+}
+.btn-back:hover { border-color: var(--primary); color: var(--primary); }
+
+/* ===== TOOLBAR ===== */
+.toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+.toolbar-right { margin-left: auto; display: flex; gap: 10px; }
+
+/* ===== STATS ===== */
+.stats-bar {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 24px;
+}
+.stat-box {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+  padding: 20px; text-align: center;
+}
+.stat-num { display: block; font-size: 28px; font-weight: 800; color: var(--primary); }
+.stat-lab { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .5px; }
+
+/* ===== TABLE ===== */
+.table-wrap { overflow-x: auto; border-radius: 14px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border-light); }
+th { background: var(--bg); font-weight: 600; color: var(--text-dim); font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
+tr:hover { background: var(--surface-hover); }
+.details { font-size: 12px; color: var(--text-dim); max-width: 300px; line-height: 1.5; }
+.score-good { color: var(--success); font-weight: 700; }
+.score-mid { color: var(--warning); font-weight: 700; }
+.score-bad { color: var(--danger); font-weight: 700; }
+
+/* ===== EMPTY STATE ===== */
+.empty-state { text-align: center; padding: 48px; color: var(--text-muted); }
+.empty-state svg { width: 64px; height: 64px; margin-bottom: 16px; opacity: .4; }
+
+/* ===== STATUS ===== */
+.status-msg { color: var(--text-dim); font-size: 13px; margin-top: 8px; }
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeIn .3s ease; }
+
+@media(max-width: 640px) {
+  .container { padding: 16px; }
+  header h1 { font-size: 1.6rem; }
+  .toolbar-right { width: 100%; margin-left: 0; }
+  .toolbar-right .btn { width: 100%; }
+  .btn-back { top: 12px; left: 12px; padding: 8px 14px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<button type="button" class="btn-back" onclick="location.href='index.html'">← Назад к тесту</button>
+
+<div class="container">
+  <header>
+    <h1>👨‍🏫 Панель учителя</h1>
+    <p>Урок 25. Обсуждение результатов и оформление работы</p>
+  </header>
+
+  <!-- Connection -->
+  <div class="card">
+    <h3>🔗 Подключение к таблице</h3>
+    <input type="text" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/ВАШ_ID/edit...">
+    <div class="toolbar">
+      <button type="button" class="btn btn-primary" onclick="loadFromSheet()">🔄 Загрузить</button>
+      <div class="toolbar-right">
+        <button type="button" class="btn btn-secondary" onclick="exportToCSV()">📥 CSV</button>
+        <button type="button" class="btn btn-danger" onclick="clearResults()">🗑 Очистить</button>
+      </div>
+    </div>
+    <p class="status-msg" id="status"></p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar" id="stats-bar" style="display:none">
+    <div class="stat-box"><span class="stat-num" id="total">0</span><span class="stat-lab">Всего</span></div>
+    <div class="stat-box"><span class="stat-num" id="avg">0%</span><span class="stat-lab">Средний</span></div>
+    <div class="stat-box"><span class="stat-num" id="v1">0</span><span class="stat-lab">Вариант 1</span></div>
+    <div class="stat-box"><span class="stat-num" id="v2">0</span><span class="stat-lab">Вариант 2</span></div>
+    <div class="stat-box"><span class="stat-num" id="v3">0</span><span class="stat-lab">Вариант 3</span></div>
+  </div>
+
+  <!-- Table -->
+  <div class="card">
+    <div class="toolbar" style="margin-bottom:16px">
+      <h2>📋 Результаты</h2>
+      <span style="color:var(--text-muted);font-size:13px;margin-left:auto" id="updated"></span>
+    </div>
+    <div id="table-area">
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        <p>Нажмите «Загрузить» чтобы получить данные</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var currentData = [];
+var GAS_URL = "https://script.google.com/macros/s/AKfycbxmLRg9MYqx8dwFfq6pI2IJc6fcrRZFogDbjpR7uWV1XRWfrQC0KLujcO3yw8ZT-EAD/exec";
+
+function extractSheetId(url) {
+  var m = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+  return m ? m[1] : null;
+}
+
+function setStatus(msg) {
+  document.getElementById('status').textContent = msg;
+}
+
+function esc(t) {
+  var d = document.createElement('div');
+  d.textContent = t;
+  return d.innerHTML;
+}
+
+function loadFromSheet() {
+  var url = document.getElementById('sheet-url').value.trim();
+  var id = extractSheetId(url);
+  if (!id) { alert('Вставьте корректный URL таблицы!'); return; }
+
+  setStatus('⏳ Загрузка...');
+  fetch('https://docs.google.com/spreadsheets/d/' + id + '/gviz/tq?tqx=out:json')
+    .then(function(res) { return res.text(); })
+    .then(function(text) {
+      var json = JSON.parse(text.replace(/^\/*O\/*\(/, '').replace(/\);$/, ''));
+      var rows = json.table.rows;
+      var headers = json.table.cols.map(function(c) { return c.label; });
+      currentData = rows.map(function(r) {
+        var o = {};
+        r.c.forEach(function(cell, i) { o[headers[i]] = cell ? cell.v : ''; });
+        return o;
+      });
+      renderTable(currentData);
+      updateStats(currentData);
+      document.getElementById('stats-bar').style.display = 'grid';
+      setStatus('✅ Загружено ' + currentData.length + ' записей');
+      document.getElementById('updated').textContent = 'Обновлено: ' + new Date().toLocaleTimeString('ru-RU');
+    })
+    .catch(function(e) {
+      setStatus('❌ Ошибка. Проверьте, что таблица открыта для чтения.');
+      console.error(e);
+    });
+}
+
+function renderTable(data) {
+  var area = document.getElementById('table-area');
+  if (!data.length) {
+    area.innerHTML = '<div class="empty-state"><p>Нет данных</p></div>';
+    return;
+  }
+  var html = '<div class="table-wrap"><table><thead><tr><th>Время</th><th>ФИО</th><th>Класс</th><th>Вар</th><th>Балл</th><th>%</th><th>Время</th><th>Ошибки</th></tr></thead><tbody>';
+  data.slice().reverse().forEach(function(row) {
+    var pct = parseInt(row['Процент']) || 0;
+    var cls = pct >= 70 ? 'score-good' : pct >= 40 ? 'score-mid' : 'score-bad';
+    html += '<tr class="fade-in">' +
+      '<td>' + (row['Время'] || '') + '</td>' +
+      '<td><strong>' + esc(row['ФИО'] || '') + '</strong></td>' +
+      '<td>' + esc(row['Класс'] || '') + '</td>' +
+      '<td>' + (row['Вариант'] || '') + '</td>' +
+      '<td>' + (row['Балл'] || 0) + '/' + (row['Макс'] || 0) + '</td>' +
+      '<td class="' + cls + '">' + pct + '%</td>' +
+      '<td>' + (row['Время_выполнения'] || '') + '</td>' +
+      '<td class="details">' + esc(row['Ошибки'] || '') + '</td>' +
+      '</tr>';
+  });
+  html += '</tbody></table></div>';
+  area.innerHTML = html;
+}
+
+function updateStats(data) {
+  document.getElementById('total').textContent = data.length;
+  if (data.length) {
+    var avg = data.reduce(function(s, r) { return s + (parseFloat(r['Процент']) || 0); }, 0) / data.length;
+    document.getElementById('avg').textContent = Math.round(avg) + '%';
+  } else {
+    document.getElementById('avg').textContent = '0%';
+  }
+  [1, 2, 3].forEach(function(v) {
+    document.getElementById('v' + v).textContent = data.filter(function(r) {
+      return parseInt(r['Вариант']) === v;
+    }).length;
+  });
+}
+
+function clearResults() {
+  if (!currentData.length) { alert('Нет данных для очистки'); return; }
+  if (!confirm('⚠️ Удалить ВСЕ результаты из таблицы?\n\nЭто действие нельзя отменить!')) return;
+
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'clear' })
+  });
+
+  currentData = [];
+  renderTable([]);
+  updateStats([]);
+  setStatus('🗑 Данные очищены');
+}
+
+function exportToCSV() {
+  if (!currentData.length) { alert('Сначала загрузите данные'); return; }
+  var h = Object.keys(currentData[0]);
+  var rows = [h];
+  currentData.forEach(function(r) {
+    rows.push(h.map(function(k) {
+      return '"' + (r[k] || '').toString().replace(/"/g, '""') + '"';
+    }));
+  });
+  var csv = rows.map(function(r) { return r.join(','); }).join('\n');
+  var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'results_urok25_' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click();
+}
+
+window.onload = function() {
+  var saved = localStorage.getItem('sheetUrl');
+  if (saved) document.getElementById('sheet-url').value = saved;
+};
+
+document.getElementById('sheet-url').addEventListener('change', function(e) {
+  localStorage.setItem('sheetUrl', e.target.value);
+});
+</script>
+</body>
+</html>
